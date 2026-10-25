@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeX - Trading Website</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+            color: #222;
+        }
+
+        header {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 22px;
+            text-align: center;
+        }
+
+        nav {
+            background: #24104f;
+            padding: 14px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 12px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 25px auto;
+        }
+
+        .balance {
+            background: linear-gradient(120deg, #ff6a88, #ff99ac);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px #888;
+        }
+
+        .stocks {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit, minmax(220px, 1fr)
+            );
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px #0002;
+        }
+
+        .price {
+            color: #6a11cb;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        button {
+            border: none;
+            color: white;
+            padding: 11px 22px;
+            margin: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .buy {
+            background: #00b894;
+        }
+
+        .sell {
+            background: #ff4757;
+        }
+
+        button:hover {
+            opacity: 0.8;
+            transform: scale(1.03);
+        }
+
+        #message {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #24104f;
+        }
+
+        footer {
+            text-align: center;
+            background: #24104f;
+            color: white;
+            padding: 18px;
+            margin-top: 35px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>📈 TradeX</h1>
+        <p>Your Colourful Trading Dashboard</p>
+    </header>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#stocks">Stocks</a>
+        <a href="#about">About</a>
+    </nav>
+
+    <div class="container" id="home">
+
+        <div class="balance">
+            <h2>My Demo Portfolio</h2>
+            <h1 id="balance">₹1,00,000</h1>
+            <p>Practice trading with virtual money!</p>
+        </div>
+
+        <h2 id="stocks">📊 Popular Stocks</h2>
+
+        <div class="stocks">
+
+            <div class="card">
+                <h2>RELIANCE</h2>
+                <p class="price">₹1,420</p>
+                <p>Demo stock price</p>
+                <button class="buy"
+                    onclick="trade('buy', 1420)">
+                    Buy
+                </button>
+                <button class="sell"
+                    onclick="trade('sell', 1420)">
+                    Sell
+                </button>
+            </div>
+
+            <div class="card">
+                <h2>TCS</h2>
+                <p class="price">₹3,250</p>
+                <p>Demo stock price</p>
+                <button class="buy"
+                    onclick="trade('buy', 3250)">
+                    Buy
+                </button>
+                <button class="sell"
+                    onclick="trade('sell', 3250)">
+                    Sell
+                </button>
+            </div>
+
+            <div class="card">
+                <h2>INFOSYS</h2>
+                <p class="price">₹1,510</p>
+                <p>Demo stock price</p>
+                <button class="buy"
+                    onclick="trade('buy', 1510)">
+                    Buy
+                </button>
+                <button class="sell"
+                    onclick="trade('sell', 1510)">
+                    Sell
+                </button>
+            </div>
+
+        </div>
+
+        <p id="message">
+            Select Buy or Sell to practice trading.
+        </p>
+
+        <h2 id="about">About TradeX</h2>
+        <p>
+            TradeX is a simple educational trading website.
+            Practice with virtual money and learn how
+            a trading dashboard works.
+        </p>
+
+    </div>
+
+    <footer>
+        <p>© 2026 TradeX | Educational Demo Only</p>
+    </footer>
+
+    <script>
+        let balance = 100000;
+
+        function trade(type, price) {
+            const message = document.getElementById("message");
+
+            if (type === "buy") {
+                if (balance >= price) {
+                    balance -= price;
+                    message.style.color = "#008f69";
+                    message.textContent =
+                        "Buy order simulated successfully!";
+                } else {
+                    message.style.color = "#e84118";
+                    message.textContent =
+                        "Not enough demo balance!";
+                }
+            } else {
+                balance += price;
+                message.style.color = "#008f69";
+                message.textContent =
+                    "Sell order simulated successfully!";
+            }
+
+            document.getElementById("balance")
+                .textContent = "₹" +
+                balance.toLocaleString("en-IN");
+        }
+    </script>
+
+</body>
+</html>
