@@ -1,0 +1,838 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradeX | Trading Dashboard</title>
+
+<style>
+:root {
+    --bg: #0b1020;
+    --panel: #141b2d;
+    --panel2: #1b2540;
+    --border: #28334c;
+    --text: #f3f5ff;
+    --muted: #8995b1;
+    --purple: #8b5cf6;
+    --green: #20d6a0;
+    --red: #ff637d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+    min-height: 100vh;
+}
+
+button, input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: 0;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 235px;
+    padding: 28px 18px;
+    background: #101629;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 800;
+    margin-bottom: 38px;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: var(--purple);
+}
+
+.menu-label {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    margin: 25px 10px 12px;
+}
+
+.nav-item {
+    display: block;
+    color: #aab4cc;
+    text-decoration: none;
+    padding: 13px 14px;
+    border-radius: 10px;
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: white;
+    background: linear-gradient(90deg, #7143df, #5939a8);
+}
+
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 30px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.topbar h1 {
+    font-size: 26px;
+    margin-bottom: 7px;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.avatar {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    border-radius: 13px;
+    font-weight: bold;
+}
+
+.grid {
+    display: grid;
+    gap: 18px;
+}
+
+.stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 22px;
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+.stat-value {
+    font-size: clamp(20px, 2.5vw, 29px);
+    font-weight: 750;
+    letter-spacing: -1px;
+    overflow-wrap: anywhere;
+}
+
+.positive {
+    color: var(--green);
+}
+
+.negative {
+    color: var(--red);
+}
+
+.stat-foot {
+    font-size: 12px;
+    margin-top: 12px;
+}
+
+.middle {
+    grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr);
+    margin-bottom: 22px;
+}
+
+.card-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.card-heading h2 {
+    font-size: 17px;
+}
+
+.pill {
+    background: #272044;
+    color: #c5aaff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.chart-summary {
+    margin-bottom: 20px;
+}
+
+.chart-summary strong {
+    font-size: 26px;
+}
+
+.chart-summary span {
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.chart {
+    width: 100%;
+    height: 220px;
+    display: block;
+}
+
+.chart-tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.chart-tabs button {
+    background: transparent;
+    color: var(--muted);
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-size: 12px;
+}
+
+.chart-tabs button.selected {
+    color: white;
+    background: var(--purple);
+}
+
+.allocation {
+    display: grid;
+    place-items: center;
+    margin: 10px 0 25px;
+}
+
+.donut {
+    width: 155px;
+    height: 155px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #8b5cf6 0 40%,
+        #29c9e8 40% 65%,
+        #20d6a0 65% 85%,
+        #ffb454 85% 100%
+    );
+    display: grid;
+    place-items: center;
+}
+
+.donut-inner {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: var(--panel);
+    display: grid;
+    place-content: center;
+    text-align: center;
+}
+
+.donut-inner strong {
+    font-size: 19px;
+}
+
+.legend {
+    display: grid;
+    gap: 15px;
+}
+
+.legend-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.legend-name {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    color: #c3cbe0;
+}
+
+.dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
+}
+
+.table-card {
+    overflow: hidden;
+}
+
+.table-card .card-heading {
+    padding: 22px 22px 0;
+}
+
+.search {
+    width: 190px;
+    max-width: 100%;
+    background: #0f172a;
+    border: 1px solid var(--border);
+    color: white;
+    padding: 10px 12px;
+    border-radius: 9px;
+    outline: none;
+}
+
+.search:focus {
+    border-color: var(--purple);
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+    text-align: left;
+}
+
+th {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    font-weight: 500;
+    background: #11182a;
+}
+
+th, td {
+    padding: 17px 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+td {
+    font-size: 13px;
+}
+
+.stock-name {
+    font-weight: bold;
+}
+
+.stock-symbol {
+    display: block;
+    color: var(--muted);
+    margin-top: 5px;
+    font-size: 11px;
+}
+
+.trade-btn {
+    padding: 8px 13px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: bold;
+    background: #253a39;
+    color: var(--green);
+}
+
+.trade-btn:hover {
+    filter: brightness(1.2);
+}
+
+.notice {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    padding: 15px 20px;
+    background: #1d2940;
+    border: 1px solid #3c4d6d;
+    border-radius: 12px;
+    box-shadow: 0 10px 35px #0005;
+    display: none;
+    z-index: 5;
+    max-width: calc(100vw - 35px);
+}
+
+footer {
+    margin-top: 25px;
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+}
+
+@media (max-width: 950px) {
+    .sidebar {
+        width: 185px;
+    }
+
+    .main {
+        padding: 22px;
+    }
+
+    .middle {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 16px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+        margin-bottom: 12px;
+    }
+
+    .menu-label {
+        display: none;
+    }
+
+    .sidebar nav {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+    }
+
+    .nav-item {
+        white-space: nowrap;
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .main {
+        padding: 17px;
+    }
+
+    .topbar h1 {
+        font-size: 22px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 17px;
+    }
+
+    .table-card {
+        padding: 0;
+    }
+
+    .table-card .card-heading {
+        padding: 17px;
+        flex-wrap: wrap;
+    }
+
+    th, td {
+        padding: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">Trade<span>X.</span></div>
+
+        <div class="menu-label">WORKSPACE</div>
+        <nav>
+            <a href="#dashboard" class="nav-item active">▦ Dashboard</a>
+            <a href="#markets" class="nav-item">↗ Markets</a>
+            <a href="#portfolio" class="nav-item">◈ Portfolio</a>
+            <a href="#markets" class="nav-item">☆ Watchlist</a>
+        </nav>
+
+        <div class="menu-label">INFORMATION</div>
+        <nav>
+            <a href="#about" class="nav-item">ⓘ About TradeX</a>
+        </nav>
+    </aside>
+
+    <main class="main" id="dashboard">
+
+        <header class="topbar">
+            <div>
+                <h1>Trading Overview</h1>
+                <p class="muted">Welcome back! Here's your market summary.</p>
+            </div>
+            <div class="profile">
+                <div>
+                    <strong>Demo Trader</strong>
+                    <p class="muted">Practice account</p>
+                </div>
+                <div class="avatar">DT</div>
+            </div>
+        </header>
+
+        <section class="grid stats" id="portfolio">
+            <div class="card">
+                <p class="stat-label">Total Portfolio Value</p>
+                <div class="stat-value" id="portfolioValue">₹1,25,000</div>
+                <p class="stat-foot positive">● Virtual portfolio</p>
+            </div>
+
+            <div class="card">
+                <p class="stat-label">Available Cash</p>
+                <div class="stat-value" id="cashValue">₹75,000</div>
+                <p class="stat-foot">Ready for demo trades</p>
+            </div>
+
+            <div class="card">
+                <p class="stat-label">Today's P&L</p>
+                <div class="stat-value positive" id="pnlValue">+₹2,450</div>
+                <p class="stat-foot positive">Illustrative demo value</p>
+            </div>
+        </section>
+
+        <section class="grid middle">
+
+            <div class="card">
+                <div class="card-heading">
+                    <h2>Portfolio Performance</h2>
+                    <span class="pill">DEMO DATA</span>
+                </div>
+
+                <div class="chart-summary">
+                    <strong id="chartPrice">₹1,25,000</strong>
+                    <span class="positive">+2.4%</span>
+                </div>
+
+                <svg class="chart" id="chart"
+                     viewBox="0 0 600 220"
+                     preserveAspectRatio="none"
+                     role="img"
+                     aria-label="Illustrative portfolio performance chart">
+                    <defs>
+                        <linearGradient id="area" x1="0" y1="0"
+                                        x2="0" y2="1">
+                            <stop offset="0%" stop-color="#8b5cf6"
+                                  stop-opacity=".35"/>
+                            <stop offset="100%" stop-color="#8b5cf6"
+                                  stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <g stroke="#29344c" stroke-dasharray="4 5">
+                        <path d="M0 35 H600"/>
+                        <path d="M0 85 H600"/>
+                        <path d="M0 135 H600"/>
+                        <path d="M0 185 H600"/>
+                    </g>
+                    <path id="chartArea" fill="url(#area)"/>
+                    <path id="chartLine" fill="none"
+                          stroke="#a78bfa" stroke-width="3"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+
+                <div class="chart-tabs">
+                    <button data-range="1D">1D</button>
+                    <button data-range="1W">1W</button>
+                    <button data-range="1M" class="selected">1M</button>
+                    <button data-range="1Y">1Y</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-heading">
+                    <h2>Asset Allocation</h2>
+                </div>
+
+                <div class="allocation">
+                    <div class="donut">
+                        <div class="donut-inner">
+                            <strong>₹1.25L</strong>
+                            <span class="muted">Total</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-row">
+                        <span class="legend-name">
+                            <i class="dot" style="background:#8b5cf6"></i>
+                            Equities
+                        </span>
+                        <strong>40%</strong>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-name">
+                            <i class="dot" style="background:#29c9e8"></i>
+                            Index funds
+                        </span>
+                        <strong>25%</strong>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-name">
+                            <i class="dot" style="background:#20d6a0"></i>
+                            Cash
+                        </span>
+                        <strong>20%</strong>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-name">
+                            <i class="dot" style="background:#ffb454"></i>
+                            Other
+                        </span>
+                        <strong>15%</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card table-card" id="markets">
+            <div class="card-heading">
+                <div>
+                    <h2>Market Watchlist</h2>
+                    <p class="muted" style="margin-top:7px">
+                        Explore stocks and place simulated orders.
+                    </p>
+                </div>
+                <input id="search" class="search"
+                       type="search"
+                       placeholder="Search stocks..."
+                       aria-label="Search stocks">
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Price</th>
+                            <th>Change</th>
+                            <th>Market</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stockRows"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <p class="notice" id="about">
+            ⚠ Educational project only. All prices and portfolio figures
+            are illustrative. Orders are simulated and are not sent to a
+            broker or stock exchange. This website does not provide live
+            financial data or investment advice.
+        </p>
+
+        <footer>© 2026 TradeX. Built for learning and demonstration.</footer>
+    </main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const stocks = [
+    { name: "Reliance Industries", symbol: "RELIANCE",
+      price: 1420, change: 2.45 },
+    { name: "Tata Consultancy Services", symbol: "TCS",
+      price: 3250, change: 1.80 },
+    { name: "Infosys Limited", symbol: "INFY",
+      price: 1510, change: -0.65 },
+    { name: "HDFC Bank", symbol: "HDFCBANK",
+      price: 1680, change: 1.12 },
+    { name: "ICICI Bank", symbol: "ICICIBANK",
+      price: 1245, change: -0.32 },
+    { name: "Tata Motors", symbol: "TATAMOTORS",
+      price: 720, change: 3.15 }
+];
+
+let cash = 75000;
+let holdings = {};
+let portfolioStart = 125000;
+
+const money = value => "₹" + value.toLocaleString("en-IN", {
+    maximumFractionDigits: 2
+});
+
+function renderStocks(filter = "") {
+    const tbody = document.getElementById("stockRows");
+
+    const filtered = stocks.filter(stock =>
+        (stock.name + stock.symbol).toLowerCase()
+            .includes(filter.toLowerCase())
+    );
+
+    tbody.innerHTML = filtered.map(stock => `
+        <tr>
+            <td>
+                <span class="stock-name">${stock.name}</span>
+                <span class="stock-symbol">${stock.symbol}</span>
+            </td>
+            <td>${money(stock.price)}</td>
+            <td class="${stock.change >= 0 ? "positive" : "negative"}">
+                ${stock.change >= 0 ? "+" : ""}${stock.change.toFixed(2)}%
+            </td>
+            <td>NSE · Demo</td>
+            <td>
+                <button class="trade-btn"
+                    data-symbol="${stock.symbol}">
+                    Buy
+                </button>
+            </td>
+        </tr>
+    `).join("");
+
+    if (!filtered.length) {
+        tbody.innerHTML = `
+            <tr><td colspan="5">No matching stocks found.</td></tr>
+        `;
+    }
+}
+
+function updateDashboard() {
+    const invested = stocks.reduce((sum, stock) =>
+        sum + (holdings[stock.symbol] || 0) * stock.price, 0);
+
+    document.getElementById("cashValue").textContent = money(cash);
+    document.getElementById("portfolioValue").textContent =
+        money(cash + invested);
+    document.getElementById("chartPrice").textContent =
+        money(cash + invested);
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => {
+        toast.style.display = "none";
+    }, 2800);
+}
+
+function buyStock(symbol) {
+    const stock = stocks.find(item => item.symbol === symbol);
+
+    if (cash < stock.price) {
+        showToast("Insufficient virtual cash for this purchase.");
+        return;
+    }
+
+    cash -= stock.price;
+    holdings[symbol] = (holdings[symbol] || 0) + 1;
+
+    updateDashboard();
+    showToast("Demo order: bought 1 " + symbol);
+}
+
+function sellStock(symbol) {
+    const stock = stocks.find(item => item.symbol === symbol);
+
+    if (!holdings[symbol]) {
+        showToast("You do not own this stock in your demo portfolio.");
+        return;
+    }
+
+    holdings[symbol]--;
+    cash += stock.price;
+
+    updateDashboard();
+    showToast("Demo order: sold 1 " + symbol);
+}
+
+document.getElementById("stockRows").addEventListener("click", event => {
+    const button = event.target.closest("button[data-symbol]");
+    if (button) buyStock(button.dataset.symbol);
+});
+
+document.getElementById("search").addEventListener("input", event => {
+    renderStocks(event.target.value);
+});
+
+// Draw an illustrative chart using SVG.
+function drawChart(range = "1M") {
+    const count = range === "1D" ? 18 :
+                  range === "1W" ? 24 :
+                  range === "1Y" ? 42 : 32;
+
+    let values = [];
+    let value = 95;
+
+    for (let i = 0; i < count; i++) {
+        value += Math.sin(i * 1.7) * 5 +
+                 Math.cos(i * 0.6) * 2 +
+                 (i / count) * 1.5;
+        values.push(value);
+    }
+
+    const min = Math.min(...values) - 5;
+    const max = Math.max(...values) + 5;
+
+    const points = values.map((v, i) => {
+        const x = i * 600 / (count - 1);
+        const y = 200 - ((v - min) / (max - min)) * 180;
+        return `${x},${y}`;
+    });
+
+    document.getElementById("chartLine").setAttribute(
+        "d", "M" + points.join(" L")
+    );
+
+    document.getElementById("chartArea").setAttribute(
+        "d", "M" + points.join(" L") + " L600,220 L0,220 Z"
+    );
+
+    document.querySelectorAll(".chart-tabs button").forEach(button => {
+        button.classList.toggle("selected",
+            button.dataset.range === range);
+    });
+}
+
+document.querySelectorAll(".chart-tabs button").forEach(button => {
+    button.addEventListener("click", () => drawChart(button.dataset.range));
+});
+
+renderStocks();
+updateDashboard();
+drawChart();
+</script>
+</body>
+</html>
